@@ -3,6 +3,7 @@
 ## 实验数据图
 
 ![实验数据图](path/to/bacteria_data.png)
+![Figure 2025-03-21 221529](https://github.com/user-attachments/assets/7a2aec01-aaec-4fea-be53-86f456621c91)
 ![Uploading Figure 2025-03-21 221529.png…]()
 
 ## 模型拟合图
