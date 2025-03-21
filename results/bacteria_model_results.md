@@ -5,6 +5,7 @@
 ![实验数据图](path/to/bacteria_data.png)
 ![Figure 2025-03-21 221529](https://github.com/user-attachments/assets/7a2aec01-aaec-4fea-be53-86f456621c91)
 ![Uploading Figure 2025-03-21 221529.png…]()
+![Figure 2025-03-21 2215390](https://github.com/user-attachments/assets/f76c513f-be35-4d7d-8fa7-dc8db9bfec88)
 
 ## 模型拟合图
 
