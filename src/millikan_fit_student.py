@@ -39,6 +39,10 @@ def calculate_parameters(x, y):
         Exx: x^2的平均值
         Exy: xy的平均值
     """
+    if len(x) == 0 or len(y) == 0:
+        raise ValueError("输入数据不能为空")
+    if len(x) != len(y):
+        raise ValueError("x和y数组长度必须相同")
     Ex = x.mean()                       #使用numpy的函数计算平均数
     Ey = y.mean()
     Exx = (x**2).mean()
@@ -60,6 +64,8 @@ def plot_data_and_fit(x, y, m, c):
     返回:
         fig: matplotlib图像对象
     """
+    if np.isnan(m) or np.isnan(c):
+        raise ValueError("斜率和截距不能为NaN")
     fig = plt.figure()              #创建图像对象
     plt.scatter(x,y)                #画散点图
     x_fit = np.linspace(min(x), max(x),100) #按拟合直线生成数据
@@ -81,6 +87,8 @@ def calculate_planck_constant(m):
         h: 计算得到的普朗克常量值
         relative_error: 与实际值的相对误差(%)
     """
+    if m <= 0:
+        raise ValueError("斜率必须为正数")
     # 电子电荷
     e = 1.602e-19  # C
     h = m*e
