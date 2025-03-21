@@ -1,5 +1,5 @@
 """
-Logistic映射与混沌系统研究
+Logistic映射与混沌系统研究（解决方案）
 """
 
 import numpy as np
@@ -8,6 +8,14 @@ import matplotlib.pyplot as plt
 def iterate_logistic(r, x0, n):
     """
     迭代Logistic映射
+    
+    参数:
+        r: 增长率参数
+        x0: 初始值
+        n: 迭代次数
+        
+    返回:
+        x: 迭代序列数组
     """
     x = np.zeros(n)
     x[0] = x0
@@ -15,66 +23,62 @@ def iterate_logistic(r, x0, n):
         x[i] = r * x[i-1] * (1 - x[i-1])
     return x
 
-def plot_multiple_time_series(r_values, x0, n):
+def plot_time_series(r, x0, n):
     """
-    绘制多个时间序列子图
+    绘制时间序列图
+    
+    参数:
+        r: 增长率参数
+        x0: 初始值
+        n: 迭代次数
+        
+    返回:
+        fig: matplotlib图像对象
     """
-    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
-    axs = axs.flatten()
-    for i, r in enumerate(r_values):
-        x = iterate_logistic(r, x0, n)
-        axs[i].plot(range(n), x, 'b-', linewidth=1)
-        axs[i].set_title(f'r = {r}')
-        axs[i].set_xlabel('迭代次数')
-        axs[i].set_ylabel('x值')
-        axs[i].grid(True, alpha=0.3)
-    plt.tight_layout()
+    x = iterate_logistic(r, x0, n)
+    t = np.arange(n)
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(t, x, 'b-', lw=1)
+    ax.set_xlabel('迭代次数')
+    ax.set_ylabel('x')
+    ax.set_title(f'Logistic映射时间序列 (r={r})')
+    ax.grid(True)
+    
     return fig
 
-def plot_bifurcation(r_min, r_max, step, n_iterations, n_discard):
+def plot_bifurcation(r_min, r_max, n_r, n_iterations, n_discard):
     """
     绘制分岔图
+    
+    参数:
+        r_min: r的最小值
+        r_max: r的最大值
+        n_r: r的取值个数
+        n_iterations: 每个r值的迭代次数
+        n_discard: 每个r值丢弃的初始迭代点数
+        
+    返回:
+        fig: matplotlib图像对象
     """
-    r_values = np.arange(r_min, r_max + step, step)
-    x0 = 0.5
-    r_list = []
-    x_list = []
+    r = np.linspace(r_min, r_max, n_r)
+    x = np.zeros(n_iterations)
+    x_plot = []
+    r_plot = []
     
-    for r in r_values:
-        x = x0
-        # 舍弃前n_discard次迭代
-        for _ in range(n_discard):
-            x = r * x * (1 - x)
-        # 记录后续迭代
-        for _ in range(n_iterations - n_discard):
-            x = r * x * (1 - x)
-            r_list.append(r)
-            x_list.append(x)
+    for r_val in r:
+        x[0] = 0.5
+        for i in range(1, n_iterations):
+            x[i] = r_val * x[i-1] * (1 - x[i-1])
+        
+        # 只保留稳定后的点
+        x_plot.extend(x[n_discard:])
+        r_plot.extend([r_val] * (n_iterations - n_discard))
     
-    fig = plt.figure(figsize=(12, 6))
-    plt.plot(r_list, x_list, 'k.', markersize=0.1, alpha=0.3)
-    plt.title('Logistic映射分岔图 (Feigenbaum Plot)')
-    plt.xlabel('r')
-    plt.ylabel('x')
-    plt.grid(True, alpha=0.2)
-    plt.tight_layout()
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.plot(r_plot, x_plot, ',k', alpha=0.1, markersize=0.1)
+    ax.set_xlabel('r')
+    ax.set_ylabel('x')
+    ax.set_title('Logistic映射分岔图')
+    
     return fig
-
-def main():
-    """主函数"""
-    # 任务1：绘制四个子图
-    r_values = [2.0, 3.2, 3.45, 3.6]
-    x0 = 0.5
-    n = 60
-    
-    fig = plot_multiple_time_series(r_values, x0, n)
-    fig.savefig("task1_results.png", dpi=300)
-    plt.close(fig)
-    
-    # 任务2：绘制分岔图
-    fig = plot_bifurcation(2.6, 4.0, 0.001, 250, 100)
-    fig.savefig("task2_feigenbaum.png", dpi=300)
-    plt.close(fig)
-
-if __name__ == "__main__":
-    main()
