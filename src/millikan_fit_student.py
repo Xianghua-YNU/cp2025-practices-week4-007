@@ -16,8 +16,12 @@ def load_data(filename):
         x: 频率数据数组
         y: 电压数据数组
     """
-    # 在此处编写代码，读取数据文件
-    pass
+    x = [];y = []           #建立空列表存数据
+    with open(filename,'r') as file:    #打开文件
+        for i in file:                  #将文件按行读取
+            x.append(float(i.split()[0]))
+            y.append(float(i.split()[1]))
+    return np.array(x),np.array(y)
 
 def calculate_parameters(x, y):
     """
@@ -35,8 +39,13 @@ def calculate_parameters(x, y):
         Exx: x^2的平均值
         Exy: xy的平均值
     """
-    # 在此处编写代码，计算Ex, Ey, Exx, Exy, m和c
-    pass
+    Ex = x.mean()                       #使用numpy的函数计算平均数
+    Ey = y.mean()
+    Exx = (x**2).mean()
+    Exy = (x*y).mean()
+    m = (Exy - Ex*Ey)/(Exx -Ex**2)      #按公式计算
+    c = (Exx*Ey - Ex*Exy)/(Exx -Ex**2)
+    return  m,c,Ex,Ey,Exx,Exy
 
 def plot_data_and_fit(x, y, m, c):
     """
@@ -51,8 +60,15 @@ def plot_data_and_fit(x, y, m, c):
     返回:
         fig: matplotlib图像对象
     """
-    # 在此处编写代码，绘制数据点和拟合直线
-    pass
+    fig = plt.figure()              #创建图像对象
+    plt.scatter(x,y)                #画散点图
+    x_fit = np.linspace(min(x), max(x),100) #按拟合直线生成数据
+    y_fit = m*x_fit + c
+    plt.polar(x_fit, y_fit)         #画拟合直线
+    plt.xlabel('频率')                #给出坐标轴
+    plt.ylabel('电压')
+    plt.rcParams['font.sans-serif']=['SimHei']
+    return fig
 
 def calculate_planck_constant(m):
     """
@@ -67,15 +83,15 @@ def calculate_planck_constant(m):
     """
     # 电子电荷
     e = 1.602e-19  # C
-    
-    # 在此处编写代码，计算普朗克常量和相对误差
+    h = m*e
+    relative_error = abs(h - 6.626e-34)/6.626e-34
     # 提示: 实际的普朗克常量值为 6.626e-34 J·s
-    pass
+    return h,relative_error
 
 def main():
     """主函数"""
     # 数据文件路径
-    filename = "millikan.txt"
+    filename = r"millikan.txt"
     
     # 加载数据
     x, y = load_data(filename)
